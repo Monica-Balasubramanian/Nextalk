@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Profile</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .profile-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 400px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #764ba2;
+    }
+
+    h2 {
+      margin: 10px 0;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+      margin-top: 10px;
+      font-size: 14px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    input[type="file"] {
+      margin: 10px 0;
+    }
+
+    button {
+      background: #764ba2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #5e3f94;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #764ba2;
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-container">
+  <div style="position: relative; display: inline-block; width: 120px; height: 120px;">
+  <img id="avatar" class="avatar" src="" alt="Avatar" style="width: 100%; height: 100%; border-radius: 60%; object-fit: cover; border: 3px solid #764ba2;" />
+  
+  <!-- + icon inside avatar -->
+  <form id="avatarForm" style="position: absolute; bottom: 10px; right:1px; margin: 0;">
+    <input type="file" id="newAvatar" accept="image/*" style="display: none;" />
+    <label for="newAvatar" id="uploadBtn" style="
+      width: 28px;
+      height: 28px;
+      background: #764ba2;
+      color: white;
+      font-size: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+      
+    ">+</label>
+  </form>
+</div>
+
+  <h2 id="username">Username</h2>
+
+  <form id="descriptionForm">
+    <textarea id="description" rows="4" placeholder="Write something about yourself..."></textarea>
+    <button type="submit">Update Description</button>
+  </form>
+
+  <div>
+    <a class="back" href="profile.html">← Back to Chat</a>
+  </div>
+  <a class="back" href="login.html">Logout</a>
+</div>
+
+<script>
+  const username = localStorage.getItem("username");
+  document.getElementById("username").innerText = username;
+
+  // Load avatar
+  const avatar = document.getElementById("avatar");
+  avatar.src = `http://127.0.0.1:5000/uploads/avatars/${username}.jpg`;
+  avatar.onerror = function () {
+    this.src = "https://ui-avatars.com/api/?name=" + username;
+  };
+
+  // Fetch user info (email, description)
+  fetch(`http://127.0.0.1:5000/userinfo?username=${username}`)
+    .then(res => res.json())
+    .then(data => {
+      if (data.description) {
+        document.getElementById("description").value = data.description;
+      }
+    });
+
+  // Handle avatar upload
+  document.getElementById("avatarForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const file = document.getElementById("newAvatar").files[0];
+    if (!file) return alert("Please choose a file");
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+    formData.append("username", username);
+
+    fetch("http://127.0.0.1:5000/upload_avatar", {
+      method: "POST",
+      body: formData
+    })
+    .then(res => res.json())
+    .then(() => {
+      alert("Profile photo updated!");
+      location.reload();
+    });
+  });
+
+  // Handle description update
+  document.getElementById("descriptionForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const description = document.getElementById("description").value;
+
+    fetch("http://127.0.0.1:5000/update_description", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ username, description })
+    })
+    .then(res => res.json())
+    .then(() => {
+      alert("Description updated!");
+    });
+  });
+  document.getElementById("newAvatar").addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append("avatar", file);
+  formData.append("username", currentUsername);
+
+  fetch("http://127.0.0.1:5000/upload_avatar", {
+    method: "POST",
+    body: formData,
+  })
+    .then((res) => res.json())
+    .then(() => {
+      alert("Profile photo updated!");
+      location.reload();
+    });
+});
+
+fetch(`http://127.0.0.1:5000/userinfo?username=${username}`)
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("description").value = data.description || "";
+  });
+
+// Save updated description
+function saveDescription() {
+  const description = document.getElementById("description").value;
+  fetch("http://127.0.0.1:5000/update_description", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, description }),
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message));
+}
+
+</script>
+</body>
+</html>
