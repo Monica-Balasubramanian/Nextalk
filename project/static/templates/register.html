@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nextalk</title>
+  <style>
+    
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Auth Box */
+.auth-container {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 40px 30px;
+  width: 350px;
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.auth-box h1 {
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 25px;
+  color: #ddd;
+}
+
+/* Input Groups */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #eee;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  outline: none;
+  transition: background 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: #ccc;
+}
+
+.input-group input:focus {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Button */
+.btn-primary {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #fff;
+  color: #764ba2;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #eaeaea;
+}
+
+/* Footer Text */
+.footer-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+.footer-text a {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.footer-text a:hover {
+  color: #ffd6ff;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+div {
+  background-color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  text-align: left;
+  width: 350px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 12px 15px;
+  margin: 12px 0;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #764ba2;
+  outline: none;
+  box-shadow: 0 0 6px rgba(118, 75, 162, 0.3);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  background-color: #764ba2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #5e3d99;
+}
+
+p {
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+p a {
+  color: #764ba2;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+  </style>
+</head>
+<body class="auth-body">
+  <div class="auth-container">
+    
+    <h1>Sign Up</h1><br>
+    <label>Username</label>
+    <input type="text" id="register-username" placeholder="Username" />
+    <label>Email</label>
+    <input type="email" id="register-email" placeholder="Email" />
+    <label>Password</label>
+    <input type="password" id="register-password" placeholder="Password" />
+    <button onclick="register()">Register</button>
+   <p class="footer-text">
+        Already have an account? <a href="file:///C:/Users/WELCOME/Desktop/a/Real-Time-Chat-Application/project/static/templates/login.html">Log in</a>
+      </p>
+      </div>
+
+  <script>
+
+function register() {
+  const username = document.getElementById("register-username").value;
+  const email = document.getElementById("register-email").value;
+  const password = document.getElementById("register-password").value;
+
+  fetch("http://127.0.0.1:5000/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.message) {
+      alert("Registration successful! Now login.");
+    } else {
+      alert(data.error || "Registration failed.");
+    }
+  });
+}
+
+  </script>
+  
+</body>
+</html>

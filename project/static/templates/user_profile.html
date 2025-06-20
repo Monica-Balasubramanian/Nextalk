@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .profile-container {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 400px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #764ba2;
+    }
+
+    h2, p {
+      margin: 10px 0;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #764ba2;
+    }
+  </style>
+</head>
+<body>
+
+<div class="profile-container">
+  <img id="avatar" class="avatar" src="" alt="Avatar" />
+  <h2 id="username">Username</h2>
+  <p id="description">Loading description...</p>
+
+  <a class="back" href="profile.html">← Back to Profile</a>
+</div>
+
+<script>
+  // Get username from URL query string
+  const urlParams = new URLSearchParams(window.location.search);
+  const username = urlParams.get("username");
+
+  // Update DOM
+  document.getElementById("username").innerText = username;
+  const avatar = document.getElementById("avatar");
+  avatar.src = `http://127.0.0.1:5000/uploads/avatars/${username}.jpg`;
+  avatar.onerror = function () {
+    this.src = `https://ui-avatars.com/api/?name=${username}`;
+  };
+
+  // Fetch user info
+  fetch(`http://127.0.0.1:5000/userinfo?username=${username}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("description").innerText = data.description || "No description available.";
+    });
+    
+</script>
+
+</body>
+</html>
