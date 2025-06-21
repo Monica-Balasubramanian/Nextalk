@@ -1,0 +1,3 @@
+git add uploads/.gitkeep uploads/avatars/.gitkeep
+git commit -m "Add upload folders"
+git push origin main
