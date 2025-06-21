@@ -191,6 +191,10 @@ def all_users():
     conn.close()
     return jsonify(users)
 
+@app.route('/')
+def home():
+    return render_template("index.html")
+
 # Initialize DB and run app
 if __name__ == "__main__":
     with app.app_context():
