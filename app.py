@@ -42,6 +42,11 @@ def init_db():
     conn.commit()
     conn.close()
 
+
+@app.route('/')
+def home():
+    return render_template("index.html")
+
 # Register
 @app.route("/register", methods=["POST"])
 def register():
@@ -191,9 +196,6 @@ def all_users():
     conn.close()
     return jsonify(users)
 
-@app.route('/')
-def home():
-    return render_template("index.html")
 
 # Initialize DB and run app
 if __name__ == "__main__":
