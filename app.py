@@ -18,7 +18,6 @@ def init_db():
     conn = sqlite3.connect("chatbot.db")
     cursor = conn.cursor()
 
-    # User table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS user (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,7 +28,6 @@ def init_db():
         )
     """)
 
-    # Messages table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -122,13 +120,14 @@ def get_messages(sender, recipient):
     ]
     return jsonify(messages)
 
-# Upload file
+# Upload file (💡 UPDATED to use dynamic base URL)
 @app.route("/upload", methods=["POST"])
 def upload():
     file = request.files["file"]
     path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(path)
-    return jsonify({"file_url": f"http://127.0.0.1:5000/uploads/{file.filename}"})
+    base_url = request.host_url.rstrip('/')
+    return jsonify({"file_url": f"{base_url}/uploads/{file.filename}"})
 
 # Serve uploaded file
 @app.route("/uploads/<filename>")
@@ -192,8 +191,8 @@ def all_users():
     conn.close()
     return jsonify(users)
 
-# Run app
+# Initialize DB and run app
 if __name__ == "__main__":
     with app.app_context():
         init_db()
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
