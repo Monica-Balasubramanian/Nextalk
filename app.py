@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory,  jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import sqlite3
 import os
@@ -41,11 +41,6 @@ def init_db():
 
     conn.commit()
     conn.close()
-
-
-@app.route('/')
-def home():
-    return render_template("index.html")
 
 # Register
 @app.route("/register", methods=["POST"])
@@ -196,9 +191,11 @@ def all_users():
     conn.close()
     return jsonify(users)
 
-
 # Initialize DB and run app
 if __name__ == "__main__":
     with app.app_context():
         init_db()
     app.run(host="0.0.0.0", port=5000)
+@app.route("/")
+def home():
+    return "🎉 Nextalk Flask backend is live!"
